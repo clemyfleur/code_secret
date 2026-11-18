@@ -36,6 +36,7 @@ Sa copie intégrale est conservée dans `examples/morpion/index.html` (blob Git 
 
 ```text
 index.html                 Structure et règles visibles
+AGENTS.md                  Consignes de développement et de vérification
 src/game.js                Moteur, état privé et contrat API 0.2
 src/app.js                 Interface et exposition conditionnelle de l’API
 src/styles.css             Présentation responsive
