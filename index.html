@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#163b37">
+  <meta name="description" content="Retrouvez un code de quatre couleurs en dix essais. Un jeu de logique solo, accessible au clavier et sur mobile.">
+  <title>Code secret · Jeu de couleurs</title>
+  <link rel="stylesheet" href="./src/styles.css">
+  <script defer src="./dist/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#game">Aller au jeu</a>
+  <main>
+    <header class="masthead"><span class="brand">● ● ● ● &nbsp; CODE SECRET</span><span>Un peu de couleur. Beaucoup de logique.</span></header>
+    <div class="layout">
+      <aside class="intro">
+        <p class="eyebrow">LE DÉFI</p>
+        <h1>À vous de<br>percer le code.</h1>
+        <p>Quatre couleurs cachées.<br>Dix essais pour trouver leur ordre.</p>
+        <section class="rules" aria-labelledby="rules-title">
+          <h2 id="rules-title">Comment jouer</h2>
+          <ol>
+            <li>Choisissez quatre couleurs, de gauche à droite. Une couleur peut se répéter.</li>
+            <li>Validez votre proposition et consultez les deux indices.</li>
+            <li>Ajustez votre code jusqu’à trouver les quatre bonnes positions.</li>
+          </ol>
+          <p><strong>Bien placées</strong> : bonne couleur, bonne position.</p>
+          <p><strong>Mal placées</strong> : bonne couleur, autre position.</p>
+          <p>Les indices sont des totaux : ils ne désignent aucun pion. Chaque occurrence compte une seule fois.</p>
+        </section>
+        <p class="quiet">6 couleurs · Répétitions autorisées · 10 essais</p>
+      </aside>
+      <section id="game" class="board" aria-labelledby="game-title">
+        <div class="board-heading"><h2 id="game-title">Votre partie</h2><span id="counter" class="counter">0 / 10 essais</span></div>
+        <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true">Chargement du jeu…</p>
+        <form id="guess-form" novalidate>
+          <fieldset id="code-fields"><legend>Votre proposition</legend><div id="slots" class="slots"></div></fieldset>
+          <p id="error" class="error" role="alert" aria-atomic="true"></p>
+          <div class="actions"><button id="submit" type="submit" class="primary">Valider le code</button><button id="restart" type="button">Nouvelle partie</button></div>
+        </form>
+        <section class="history-section" aria-labelledby="history-title">
+          <h3 id="history-title">Le fil de vos essais</h3>
+          <p id="empty" class="empty">Vos propositions et leurs indices apparaîtront ici.</p>
+          <ol id="history" class="history"></ol>
+        </section>
+      </section>
+    </div>
+    <footer><span>Un jeu solo inspiré du Mastermind</span><span id="version"></span></footer>
+    <noscript>Activez JavaScript pour jouer. Aucun compte ni service externe n’est nécessaire.</noscript>
+  </main>
+</body>
+</html>

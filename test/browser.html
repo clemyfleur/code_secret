@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Vérification navigateur · Code secret</title></head>
+<body>
+  <h1>Vérification dans le navigateur</h1>
+  <p>Cette page teste la véritable application dans un cadre de même origine. Elle ne modifie que ses parties de test.</p>
+  <button id="run" type="button">Lancer les vérifications</button>
+  <pre id="report" role="status">En attente.</pre>
+  <iframe id="app" title="Application testée" style="width:100%;height:900px;border:1px solid #aaa"></iframe>
+  <script type="module" src="./browser.js"></script>
+</body>
+</html>
