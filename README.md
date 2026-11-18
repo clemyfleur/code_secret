@@ -53,6 +53,13 @@ Sources fournies : `tp2_mastermind.pdf`, édition 2.1, annexe `code-couleurs-1.0
 
 Palette exacte, dans l’ordre : **rouge, bleu, vert, jaune, orange, violet**. Le secret aléatoire de quatre couleurs est fixe pendant la partie ; répétitions autorisées. Une proposition valide consomme un essai et reste dans l’historique avec ses deux totaux. Les positions exactes sont comptées avant les occurrences restantes ; aucun pion ne compte deux fois. Une saisie invalide affiche une explication sans consommer d’essai. Quatre bonnes positions donnent la victoire, même au dixième essai ; sinon dix essais donnent la défaite. La fin bloque les propositions ; une nouvelle partie remet tout à zéro. Le secret n’est jamais révélé séparément, même après défaite.
 
+### Cas guidé : compter les répétitions
+
+- Secret de départ · 🔴 🔴 🔵 🟢
+- Proposition · 🔴 🔴 🔴 🔴
+- Attendu · 2 bien placées, 0 mal placée, 1 essai utilisé.
+- Les deux rouges bien placés sont déjà comptés. Il reste un bleu et un vert dans le secret.
+
 ## API 0.2
 
 Ouvrir `/?test=1` (ou `/nom-du-depot/?test=1` après publication). Attendre la présence de `window.codeSecretTest` dans la console. L’état initial est `not-started` ; sans `test=1`, l’API n’est pas exposée et la partie démarre normalement.
