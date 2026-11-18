@@ -28,6 +28,15 @@
           <p><strong>Bien placées</strong> : bonne couleur, bonne position.</p>
           <p><strong>Mal placées</strong> : bonne couleur, autre position.</p>
           <p>Les indices sont des totaux : ils ne désignent aucun pion. Chaque occurrence compte une seule fois.</p>
+          <details class="guided-example">
+            <summary>Cas guidé : compter les répétitions</summary>
+            <p>Cet exemple est indépendant de votre partie.</p>
+            <p><strong>Secret de départ</strong> · <span role="img" aria-label="rouge, rouge, bleu, vert">🔴 🔴 🔵 🟢</span></p>
+            <p><strong>Proposition</strong> · <span role="img" aria-label="rouge, rouge, rouge, rouge">🔴 🔴 🔴 🔴</span></p>
+            <button id="run-example" type="button">Afficher le résultat de l’exemple</button>
+            <p id="example-result" role="status" aria-live="polite" aria-atomic="true"></p>
+            <p id="example-explanation" hidden>Les deux rouges bien placés sont déjà comptés. Il reste un bleu et un vert dans le secret. Les deux rouges supplémentaires ne comptent donc pas.</p>
+          </details>
         </section>
         <p class="quiet">6 couleurs · Répétitions autorisées · 10 essais</p>
       </aside>

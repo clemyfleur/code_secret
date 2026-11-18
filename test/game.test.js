@@ -178,14 +178,39 @@ test('getters sans effet et rendu terminé avant résolution des mutations', asy
   assert.equal(api.getState().history.length, 1);
 });
 
-test('tirages : options absentes/undefined/vides, répétitions et dernière couleur possibles', async () => {
+test('chaque démarrage sans secret tire quatre couleurs, avec répétitions possibles', async () => {
+  let calls = 0;
   let value = 0;
-  const api = createGame(() => {}, () => value);
+  const api = createGame(() => {}, () => { calls += 1; return value; });
+  for (const options of [undefined, {}, undefined, {}]) {
+    const started = await api.startGame(options);
+    assert.equal(started.attempts, 0);
+    assert.deepEqual(started.history, []);
+    const guess = Array(4).fill(value === 0 ? 'rouge' : 'violet');
+    assert.equal((await api.submitGuess(guess)).status, 'won');
+    value = 0.999999;
+  }
+  assert.equal(calls, 16);
+});
+
+test('un secret imposé ne consomme aucun tirage et le démarrage suivant redevient aléatoire', async () => {
+  let calls = 0;
+  const api = createGame(() => {}, () => { calls += 1; return 0.999999; });
+  await api.startGame({ secret: blues });
+  assert.equal((await api.submitGuess(blues)).status, 'won');
+  assert.equal(calls, 0);
   await api.startGame();
-  assert.equal((await api.submitGuess(reds)).status, 'won');
-  await api.startGame(undefined);
-  assert.equal((await api.submitGuess(reds)).status, 'won');
-  value = 0.999999;
-  await api.startGame({});
+  assert.equal(calls, 4);
   assert.equal((await api.submitGuess(Array(4).fill('violet'))).status, 'won');
+});
+
+test('les six couleurs sont accessibles et le secret tiré reste fixe pendant une partie', async () => {
+  for (let index = 0; index < COLORS.length; index += 1) {
+    let calls = 0;
+    const api = createGame(() => {}, () => { calls += 1; return (index + 0.5) / COLORS.length; });
+    await api.startGame();
+    await api.submitGuess(Array(4).fill(COLORS[(index + 1) % COLORS.length]));
+    assert.equal((await api.submitGuess(Array(4).fill(COLORS[index]))).status, 'won');
+    assert.equal(calls, 4);
+  }
 });

@@ -30,6 +30,17 @@ button.addEventListener('click', async () => {
       assert(api.getState().status === 'not-started', 'Partie démarrée trop tôt');
       assert(node('code-fields').disabled, 'Saisie active avant démarrage');
     });
+    await check('Cas guidé : 2/0, un essai, sans démarrer la partie', async () => {
+      const before = JSON.stringify(api.getState());
+      node('run-example').click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      assert(node('example-result').textContent === '2 bien placées, 0 mal placée, 1 essai utilisé.', 'Résultat guidé incorrect');
+      assert(!node('example-explanation').hidden, 'Explication absente');
+      assert(JSON.stringify(api.getState()) === before, 'Exemple modifie la partie');
+      node('run-example').click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      assert(node('example-result').textContent.includes('1 essai utilisé'), 'Exemple non reproductible');
+    });
     const examples = [
       [basic, ['rouge', 'vert', 'bleu', 'orange'], 1, 2],
       [basic, ['orange', 'violet', 'rouge', 'bleu'], 0, 2],
@@ -52,6 +63,28 @@ button.addEventListener('click', async () => {
         assert([...node('history').querySelectorAll('.peg')].every((peg, j) => peg.textContent === guess[j]), 'Couleurs visibles différentes');
       });
     }
+    await check('Cas guidé pendant la partie : aucun essai ni historique modifié', async () => {
+      await api.startGame({ secret: basic });
+      await api.submitGuess(blue);
+      const before = JSON.stringify(api.getState());
+      const visible = node('game').innerHTML;
+      node('run-example').click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      assert(JSON.stringify(api.getState()) === before && node('game').innerHTML === visible, 'La partie active a changé');
+    });
+    await check('Saisie incomplète dans l’interface : message précis, aucun essai consommé', async () => {
+      await api.startGame({ secret: duplicate });
+      const fields = [...doc.querySelectorAll('select')];
+      for (const values of [ ['rouge', '', '', ''], ['', 'rouge', 'bleu', 'vert'], ['rouge', '', 'bleu', 'vert'], ['rouge', 'rouge', 'bleu', ''], ['', '', '', ''] ]) {
+        fields.forEach((select, i) => { select.value = values[i]; });
+        node('submit').click();
+        const state = api.getState();
+        assert(state.lastError.code === 'invalid-length', 'Mauvais code de refus');
+        assert(node('error').textContent === 'Choisissez exactement quatre couleurs.', 'Message incomplet incorrect');
+        assert(state.attempts === 0 && state.history.length === 0 && state.lastGuess === null && state.lastResult === null, 'Saisie refusée modifie la partie');
+        assert(node('counter').textContent === '0 / 10 essais' && node('history').children.length === 0, 'Affichage modifié par le refus');
+      }
+    });
     await check('Action interface relue par getState ; saisie invalide sans essai', async () => {
       await api.startGame({ secret: duplicate });
       node('submit').click();

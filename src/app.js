@@ -70,9 +70,18 @@ function render(state, action) {
 }
 
 const game = createGame(render);
+$('run-example').addEventListener('click', async () => {
+  const example = createGame();
+  await example.startGame({ secret: ['rouge', 'rouge', 'bleu', 'vert'] });
+  const { lastResult, attempts } = await example.submitGuess(Array(4).fill('rouge'));
+  $('example-result').textContent = `${lastResult.wellPlaced} bien placées, ${lastResult.misplaced} mal placée, ${attempts} essai utilisé.`;
+  $('example-explanation').hidden = false;
+});
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  await game.submitGuess(selects.map((select) => select.value));
+  // Une position non choisie n'est pas une couleur : le moteur signale une saisie incomplète.
+  const guess = selects.map((select) => select.value).filter((color) => color !== '');
+  await game.submitGuess(guess);
 });
 $('restart').addEventListener('click', async () => {
   await game.startGame();

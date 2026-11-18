@@ -24,6 +24,10 @@ h3 { font-size: 1rem; }
 .rules ol { padding-left: 22px; }
 .rules li { margin: 12px 0; }
 .rules p { margin-bottom: 10px; }
+.guided-example { margin-top: 22px; padding: 14px; border: 1px solid #ced6ca; border-radius: 10px; }
+.guided-example summary { font-weight: 700; cursor: pointer; min-height: 44px; }
+.guided-example p { margin-top: 12px; }
+#example-result { font-weight: 700; }
 .quiet, footer { color: var(--muted); font-size: .78rem; }
 .board { padding: 30px; background: #fffefa; border: 1px solid #d7ddcf; border-radius: 20px; box-shadow: 0 16px 40px #173c3809; }
 .board-heading h2 { margin: 0; }

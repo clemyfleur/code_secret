@@ -1,6 +1,8 @@
-# Code secret en couleurs · v0.1.1
+# Code secret en couleurs · v0.1.4
 
 Jeu solo statique : quatre couleurs à retrouver en dix essais, utilisable au clavier et sur petit écran. Aucune dépendance à installer pour le jeu, aucun compte, serveur applicatif, service d’IA ou stockage de données personnelles.
+
+Depuis la v0.1.4, chaque partie normale choisit **quatre couleurs au hasard parmi les six, avec répétitions possibles**, y compris après « Nouvelle partie ». Le secret reste inchangé pendant la partie. Deux tirages peuvent donner le même code par hasard. Le code fixe introduit en v0.1.3 a été retiré ; le tirage suit à nouveau l’exigence de l’énoncé et du contrat commun 0.2. L’API de test conserve la possibilité d’imposer explicitement un secret via `startGame({ secret: [...] })`. Le cas guidé conserve son secret rouge – rouge – bleu – vert, indépendant de la partie principale.
 
 ## Démarrer et vérifier
 
@@ -51,14 +53,18 @@ Décision proposée avec Codex : garder HTML/CSS/JavaScript natifs, séparer les
 
 Sources fournies : `tp2_mastermind.pdf`, édition 2.1, annexe `code-couleurs-1.0` ; `API commune de test — Code secret en couleurs.pdf`, contrat 0.2, édition Google 1.5 ; documents mis à jour le 28 octobre 2026. Ils décrivent le besoin et les rendus pédagogiques ; ils ne constituent pas une autorisation de publier ou transmettre des données.
 
-Palette exacte, dans l’ordre : **rouge, bleu, vert, jaune, orange, violet**. Le secret aléatoire de quatre couleurs est fixe pendant la partie ; répétitions autorisées. Une proposition valide consomme un essai et reste dans l’historique avec ses deux totaux. Les positions exactes sont comptées avant les occurrences restantes ; aucun pion ne compte deux fois. Une saisie invalide affiche une explication sans consommer d’essai. Quatre bonnes positions donnent la victoire, même au dixième essai ; sinon dix essais donnent la défaite. La fin bloque les propositions ; une nouvelle partie remet tout à zéro. Le secret n’est jamais révélé séparément, même après défaite.
+Palette exacte, dans l’ordre : **rouge, bleu, vert, jaune, orange, violet**. Le secret de quatre couleurs est tiré au hasard à chaque nouvelle partie et reste fixe pendant la partie ; répétitions autorisées. Une proposition valide consomme un essai et reste dans l’historique avec ses deux totaux. Les positions exactes sont comptées avant les occurrences restantes ; aucun pion ne compte deux fois. Une saisie invalide affiche une explication sans consommer d’essai. Quatre bonnes positions donnent la victoire, même au dixième essai ; sinon dix essais donnent la défaite. La fin bloque les propositions ; une nouvelle partie remet tout à zéro. Le secret n’est jamais révélé séparément, même après défaite.
 
 ### Cas guidé : compter les répétitions
+
+Dans le jeu, ouvrir « Cas guidé : compter les répétitions », puis cliquer sur « Afficher le résultat de l’exemple ». Le résultat est calculé avec le moteur commun. L’exemple est indépendant : il ne démarre pas et ne modifie pas votre partie, son compteur ou son historique.
 
 - Secret de départ · 🔴 🔴 🔵 🟢
 - Proposition · 🔴 🔴 🔴 🔴
 - Attendu · 2 bien placées, 0 mal placée, 1 essai utilisé.
 - Les deux rouges bien placés sont déjà comptés. Il reste un bleu et un vert dans le secret.
+
+Vérification du 18 novembre 2026 (v0.1.2) : le bouton affiche le résultat calculé ci-dessus. Les **43 tests Node et 21 contrôles navigateur passent**, dont deux nouveaux contrôles confirmant que l’exemple ne modifie pas la partie principale, avant son démarrage ou pendant une partie en cours. Le fichier `dist/app.js` a été régénéré pour conserver l’ouverture directe de `index.html`.
 
 ## API 0.2
 
@@ -71,10 +77,57 @@ await api.startGame({ secret: ['rouge', 'rouge', 'bleu', 'vert'] });
 await api.submitGuess(['rouge', 'bleu', 'rouge', 'rouge']);
 // attempts: 1 ; lastResult: { wellPlaced: 1, misplaced: 2 }
 api.getState(); // synchrone ; même partie que celle affichée
-await api.startGame(); // nouveau tirage aléatoire
+await api.startGame(); // nouvelle partie : secret aléatoire
 ```
 
 Attendre chaque mutation avant la suivante. `submitGuess` résout les refus dans `lastError`, selon l’ordre : partie non démarrée, partie terminée, type/tableau dense, longueur, couleur exacte. `startGame` invalide rejette une `Error` avec `code` et `message` sans modifier l’état ni l’écran. Les entrées et sorties sont copiées ; les getters ne modifient rien. Aucun champ `secret` ou `solution` n’est renvoyé.
+
+## Trois scénarios reproductibles (v0.1.3)
+
+Les actions et attendus ci-dessous ont été inscrits avant leur exécution. Chaque scénario repart d’une partie neuve avec le secret connu **rouge – rouge – bleu – vert**. Pour reproduire dans le navigateur, ouvrir le jeu avec `?test=1`, puis utiliser `const api = window.codeSecretTest` dans la console et attendre chaque appel.
+
+**Exécution réalisée le 18 novembre 2026 sur la version locale v0.1.3**, via les méthodes `startGame`, `submitGuess` et `getState` du moteur `src/game.js`, sous Node.js v24.22.3. Les trois scénarios ont été exécutés avec assertions et réussissent. Cette exécution vérifie les états du moteur ; l’affichage et les interactions dans le navigateur n’ont pas été retestés ici. Aucun code du jeu n’a été modifié.
+
+### 1. Compter les rouges sans compter deux fois une occurrence
+
+- **État connu** : `await api.startGame({ secret: ['rouge', 'rouge', 'bleu', 'vert'] })` ; `playing`, 0 essai, historique vide.
+- **Action** : `await api.submitGuess(['rouge', 'rouge', 'rouge', 'rouge'])`.
+- **Attendu** : 2 bien placées, 0 mal placée ; 1 essai utilisé ; 1 entrée dans l’historique ; partie toujours `playing` ; aucune erreur. Les deux rouges exacts sont déjà comptés : les couleurs restantes du secret sont bleu et vert.
+- **Obtenu (v0.1.3)** : `{ wellPlaced: 2, misplaced: 0 }`, `attempts: 1`, `history.length: 1`, `status: 'playing'`, `lastError: null`. **Conforme.**
+
+### 2. Refuser une proposition incomplète sans consommer d’essai
+
+- **État connu** : redémarrer avec le même `startGame` ; `playing`, 0 essai, historique vide.
+- **Action** : `await api.submitGuess(['rouge'])`.
+- **Attendu** : refus `invalid-length` accompagné d’un message explicatif ; `playing`, toujours 0 essai et historique vide ; `lastGuess` et `lastResult` restent `null`.
+- **Obtenu (v0.1.3)** : `lastError.code: 'invalid-length'`, message « Choisissez exactement quatre couleurs. », `status: 'playing'`, `attempts: 0`, `history: []`, `lastGuess: null`, `lastResult: null`. **Conforme.**
+
+### 3. Gagner au dixième et dernier essai
+
+- **État connu** : redémarrer avec le même secret, puis envoyer neuf fois `await api.submitGuess(['bleu', 'bleu', 'bleu', 'bleu'])`. Vérifier `playing`, 9 essais et 9 entrées dans l’historique avant l’action finale.
+- **Action** : `await api.submitGuess(['rouge', 'rouge', 'bleu', 'vert'])`.
+- **Attendu** : 4 bien placées, 0 mal placée ; victoire `won` ; 10 essais utilisés et 10 entrées dans l’historique ; aucune erreur. La victoire doit être prioritaire sur la limite de dix essais.
+- **Obtenu (v0.1.3)** : avant l’action, `playing` à 9 essais ; après l’action, `{ wellPlaced: 4, misplaced: 0 }`, `status: 'won'`, `attempts: 10`, `history.length: 10`, `lastError: null`. **Conforme.**
+
+### Retest de l’interface des trois scénarios
+
+Retest effectué le **18 novembre 2026**, version locale **v0.1.3**, dans le navigateur intégré de Codex, à `http://127.0.0.1:4173/?test=1`. Chaque scénario a été préparé par le bouton « Nouvelle partie » (secret fixe rouge – rouge – bleu – vert), puis exécuté avec les listes de couleurs et le bouton « Valider le code ». Aucun code du jeu n’a été modifié pour ce retest.
+
+| Scénario | Résultat visible obtenu | Comparaison avec l’attendu |
+| --- | --- | --- |
+| 1. Quatre rouges | Compteur `1 / 10 essais`, indice `2 bien placée(s) · 0 mal placée(s)`, une ligne dans l’historique, 9 essais restants et saisie active | Conforme |
+| 2. Seulement la première position rouge, les trois autres sur « Choisir… » | Compteur `0 / 10 essais`, historique vide, 10 essais restants, message « Utilisez uniquement rouge, bleu, vert, jaune, orange ou violet, en minuscules. » | Refus et compteur conformes ; message différent de « Choisissez exactement quatre couleurs. » attendu dans le scénario API |
+| 3. Neuf propositions de quatre bleus, puis le code exact | Avant validation : `9 / 10 essais`. Après : `10 / 10 essais`, « Bravo ! Code trouvé en 10 essai(s). », dix lignes dans l’historique, dernier indice `4 bien placée(s) · 0 mal placée(s)`, listes et validation désactivées | Conforme |
+
+**Écart du scénario 2** : le scénario API envoie un tableau d’un seul élément (`['rouge']`), ce qui produit `invalid-length`. L’interface envoie toujours les quatre valeurs des listes ; les trois positions non choisies sont des chaînes vides (`['rouge', '', '', '']`), d’où `invalid-color` et le message différent. Le moteur respecte son ordre de validation dans les deux cas, mais le message de l’interface gagnerait à expliquer explicitement que des positions sont manquantes. Cet écart est signalé, sans correction dans ce retest.
+
+### Correction et nouvelle vérification (v0.1.4)
+
+L’écart décrit ci-dessus concernait la v0.1.3. En v0.1.4, l’interface retire les choix vides avant d’envoyer la proposition au moteur. Une position manquante produit ainsi `invalid-length` et le message **« Choisissez exactement quatre couleurs. »**, sans consommer d’essai ni modifier l’historique. Les propositions complètes conservent leur ordre de gauche à droite ; les validations et priorités d’erreur de l’API restent identiques.
+
+Vérification du 18 novembre 2026 : **45 tests Node et 22 contrôles navigateur réussis**. Le nouveau contrôle navigateur couvre une proposition entièrement vide, un seul rouge et une position manquante au début, au milieu ou à la fin. Le compteur reste à `0 / 10 essais`, l’historique reste vide et le message attendu est affiché dans chaque cas. Une vérification directe avec les listes et le bouton a également confirmé le message corrigé pour un seul rouge.
+
+Les tests du tirage emploient une source aléatoire contrôlée : quatre appels par démarrage sans secret, six couleurs accessibles, répétitions possibles, aucun nouveau tirage pendant une partie et retour au tirage aléatoire après un secret imposé. Ces tests vérifient le mécanisme sans exiger que deux parties aient toujours des codes différents. Les tests à secret connu utilisent désormais explicitement `startGame({ secret: [...] })` : le bouton « Nouvelle partie » ne garantit plus rouge – rouge – bleu – vert.
 
 ## Résultats et correction constatée
 
