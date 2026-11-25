@@ -20,6 +20,45 @@ Ouvrir le [jeu et son guide](https://clemyfleur.github.io/code_secret/#installer
 
 Le nom affiché est **Code secret**. L’icône originale à quatre pions existe en PNG 192 et 512 px, en version maskable 512 px et en icône Apple 180 px ; `assets/icon.svg` est la source graphique. Le bouton natif apparaît seulement après `beforeinstallprompt` ; le guide reste accessible à tous. Sources : [MDN installation](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable), [invitation native](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Trigger_install_prompt), [Apple](https://support.apple.com/guide/iphone/iphea86e5236/ios).
 
+### Procédure sur téléphone : installation et test hors connexion
+
+Cette procédure est à exécuter sur votre téléphone. Elle décrit un essai prévu : sa présence dans le README ne signifie pas qu’une installation réelle ou un test en mode avion a déjà été effectué.
+
+**Installer à partir du QR code**
+
+1. Affichez le QR code sur un ordinateur ou sur papier, puis scannez-le avec l’appareil photo du téléphone.
+2. Ouvrez le lien dans **Safari sur iPhone** ou **Chrome sur Android**. Si le lien s’ouvre dans une messagerie, utilisez son menu pour l’ouvrir dans le navigateur. Vérifiez l’adresse : `https://clemyfleur.github.io/code_secret/#installer`, sans `?test=1`.
+3. Avec Internet activé, attendez le message **« Jeu prêt hors connexion sur cet appareil »** dans le guide d’installation.
+4. Sur **iPhone**, choisissez **Partager → Sur l’écran d’accueil → Ajouter** ; activez « Ouvrir comme app web » si proposé. Sur **Android**, touchez **Installer Code secret**, ou choisissez **⋮ → Installer l’application / Ajouter à l’écran d’accueil**, puis confirmez. Les intitulés peuvent varier selon la version du navigateur.
+5. Repérez l’icône à quatre pions nommée **Code secret** sur l’écran d’accueil ou dans les applications. Ouvrez le jeu depuis cette icône une première fois **avec Internet**, puis attendez à nouveau le message de disponibilité hors connexion. Cette étape prépare aussi le contexte de l’application installée.
+
+**Vérifier sans Internet**
+
+État de départ : application installée, ouverte une première fois en ligne depuis son icône, message « prêt hors connexion » affiché. Attendu : une nouvelle partie doit pouvoir démarrer après fermeture et réouverture sans réseau.
+
+1. Fermez le jeu ; ne vous contentez pas de le laisser au premier plan.
+2. Activez le **mode avion**, puis vérifiez que le **Wi-Fi est également désactivé**.
+3. Rouvrez **Code secret depuis son icône**, sans réactiver Internet.
+4. Choisissez quatre couleurs, puis touchez **Valider le code**.
+5. Vérifiez les résultats attendus dans le tableau ci-dessous, puis touchez **Nouvelle partie**.
+
+| Contrôle | Résultat attendu |
+| --- | --- |
+| Réouverture sans réseau | Le jeu, ses couleurs et ses commandes se chargent |
+| Première proposition complète | Compteur à **1/10**, une ligne dans l’historique et un indice affiché |
+| Cohérence de l’affichage | Même indice dans le message et la ligne de l’historique ; aucune erreur de chargement |
+| Nouvelle partie | Compteur à **0/10**, historique vide, sélections réinitialisées et commandes actives |
+
+La réouverture démarre une nouvelle partie : la progression précédente n’est pas sauvegardée. Ce test vérifie l’usage hors connexion ; un indice obtenu avec un secret aléatoire inconnu ne prouve pas à lui seul l’exactitude du calcul.
+
+**Si le chargement échoue** : réactivez Internet, ouvrez le jeu depuis son icône, attendez le message « prêt hors connexion », puis fermez et recommencez le test. Si le problème persiste, notez l’étape, le message et l’appareil avant d’envisager une correction. Réactivez vos connexions à la fin de l’essai.
+
+**Trace à compléter après l’essai réel**
+
+| Date | Téléphone / système | Navigateur / version | Version du jeu | Nom et icône corrects | Réouverture en mode avion | Proposition et historique | Nouvelle partie | Obtenu / statut |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| À renseigner | À renseigner | À renseigner | À relever dans le pied de page | À vérifier | À vérifier | À vérifier | À vérifier | Non exécuté dans le cadre de cette procédure |
+
 ### Hors connexion et mises à jour
 
 Après une première ouverture HTTPS (ou localhost en développement), attendre « Jeu prêt hors connexion sur cet appareil ». Seuls le jeu, le guide, les icônes et le QR sont précachés ; le cache est propre au sous-répertoire. Les pages de tests et les requêtes `?test=1` ne sont pas servies par ce cache ; le mode test n’enregistre pas de service worker.
