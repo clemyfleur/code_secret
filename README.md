@@ -1,8 +1,22 @@
 # Code secret en couleurs · v0.2.0
 
+## Repères Git : jalon-1, jalon-2 et sauvegarde
+
+État vérifié sur GitHub le **25 novembre 2026**, après le remplacement de `jalon-2` explicitement confirmé par l’utilisatrice :
+
+| Tag | Commit associé | Contenu |
+| --- | --- | --- |
+| [jalon-1](https://github.com/clemyfleur/code_secret/tree/jalon-1) | `99d8ad6f6a9b5f00f7b6a84e17690cdddf807c4a` | Première remise, conservée sans modification |
+| [jalon-2](https://github.com/clemyfleur/code_secret/releases/tag/jalon-2) | `9a3f8fb1efe2a8602d6e9f046cdc07bd581d7d21` | Jeu v0.2.0 avec PWA, icônes, QR code, résultats des vérifications et procédure d’installation et de test hors connexion |
+| [jalon-2-avant-pwa](https://github.com/clemyfleur/code_secret/tree/jalon-2-avant-pwa) | `0731e8ca59b1aef2244d6aa597b9e9127e4dd7f2` | Sauvegarde de l’ancienne cible de `jalon-2`, avant les ajouts PWA |
+
+Le tag `jalon-2` a été remplacé à la demande de l’utilisatrice pour inclure la version publiée avec la PWA et sa procédure. L’ancienne version reste accessible grâce à `jalon-2-avant-pwa` ; `jalon-1` est inchangé. La [release Jalon 2](https://github.com/clemyfleur/code_secret/releases/tag/jalon-2) présente cette mise à jour.
+
+Cette actualisation du README est un commit documentaire ultérieur sur `main` : elle ne déplace aucun des trois tags et n’est pas ajoutée rétroactivement au contenu figé de `jalon-2`. GitHub Pages suit `main`, indépendamment des tags. Les mentions de tags « inchangés » dans les comptes rendus plus bas décrivent leur état au moment de ces opérations, avant le remplacement explicite de `jalon-2`.
+
 ## PWA installable · préparation et vérification du 25 novembre 2026
 
-État initial : jeu statique v0.1.4, sans manifeste ni service worker. Choix : conserver le nom « Code secret » et les règles ; icône originale à quatre pions, installation progressive, cache des seuls fichiers du jeu, aucune sauvegarde de partie. Le QR code visera `https://clemyfleur.github.io/code_secret/#installer` pour ouvrir le jeu directement sur le guide. Les tags `jalon-1` et `jalon-2` seront conservés.
+État initial : jeu statique v0.1.4, sans manifeste ni service worker. Choix : conserver le nom « Code secret » et les règles ; icône originale à quatre pions, installation progressive, cache des seuls fichiers du jeu, aucune sauvegarde de partie. Le QR code vise `https://clemyfleur.github.io/code_secret/#installer` pour ouvrir le jeu directement sur le guide. Les tags ont été conservés pendant cette préparation ; `jalon-2` a ensuite été actualisé sur demande explicite, avec la sauvegarde décrite ci-dessus.
 
 Avant essais : vérifier le manifeste et les dimensions des icônes ; décoder le QR pour retrouver cette URL ; exécuter les tests du moteur, du cache hors ligne et du guide d’installation ; relancer les 30 contrôles de l’interface ; inspecter le guide en 375 px. Attendus : mêmes règles/API, aucun débordement, aucune API exposée en mode normal, service worker limité au dossier du jeu, ressources disponibles en cache, guide utilisable même sans bouton d’installation natif. Vérifier le chargement sous `/code_secret/`. Les tests simulés de réseau coupé seront distingués d’un véritable essai en mode avion, et l’installation réelle sur iPhone, Android et ordinateur restera à confirmer sur ces appareils.
 
@@ -80,7 +94,7 @@ Version v0.2.0 ; Node.js v24.22.3 et navigateur intégré de Codex, serveur loca
 
 **Après publication le 25 novembre 2026** : GitHub Pages a déployé avec succès le commit `efc7ddb73a2c8fe61849ab1c65aa35726df6f4f9`. Les 29 fichiers distants, PNG compris, ont été comparés aux fichiers locaux par leur empreinte Git : identiques. Sur l’adresse publique et la v0.2.0 affichée : **30/30 contrôles du jeu et 4/4 contrôles PWA réussis, 0 échec**. Le service worker est actif dans `/code_secret/`, les ressources attendues sont dans le cache réel et les trois guides sont ouvrables. Inspection visuelle et mesure à 375 × 844 px : largeur totale 360 px, égale à la largeur utile avec barre verticale ; aucun débordement. Le décodeur QR du navigateur est indisponible sur le site public également.
 
-Reproduire avec le [banc du jeu](https://clemyfleur.github.io/code_secret/test/browser.html?pwa=0.2.0) et le [banc PWA](https://clemyfleur.github.io/code_secret/test/pwa.html?release=0.2.0). Capture du guide conservée localement hors du dépôt : `outputs/pwa-guide-mobile.jpg`. Le cache réel observé ne constitue pas à lui seul une preuve de réouverture en mode avion. Les tags `jalon-1` et `jalon-2` conservent leurs commits ; la PWA est une livraison ultérieure sur `main`.
+Reproduire avec le [banc du jeu](https://clemyfleur.github.io/code_secret/test/browser.html?pwa=0.2.0) et le [banc PWA](https://clemyfleur.github.io/code_secret/test/pwa.html?release=0.2.0). Capture du guide conservée localement hors du dépôt : `outputs/pwa-guide-mobile.jpg`. Le cache réel observé ne constitue pas à lui seul une preuve de réouverture en mode avion. Lors de cette première publication PWA, les tags n’avaient pas changé ; le remplacement de `jalon-2` est intervenu ensuite et figure dans les repères Git ci-dessus.
 
 Restent à vérifier sur appareils : installation réelle sur iPhone/Android/ordinateur, nom et icône sur l’écran d’accueil, fermeture puis réouverture en mode avion, passage d’une version installée à la suivante. Les simulations ne remplacent pas ces essais.
 
