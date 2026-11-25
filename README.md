@@ -69,6 +69,38 @@ Vérification du 18 novembre 2026 (v0.1.2) : le bouton affiche le résultat calc
 
 ## API 0.2
 
+### Audit du contrat du 25 novembre 2026
+
+Contrat relu : édition Google 1.5 du 28 octobre 2026, six pages. Au début de cet audit, les 16 fichiers du projet local correspondent au dépôt `main` (`bc463b665e021fd71d5490e90339c8787c6b9b87`). L’API 0.2 est déjà implémentée : `createGame(render)` crée la partie principale dans `src/app.js` ; la même instance reçoit les actions du formulaire, celles de « Nouvelle partie » et les appels via `window.codeSecretTest`. Le cas guidé reste un exemple séparé et n’est pas utilisé pour répondre aux tests de la partie principale.
+
+**Plan** : conserver le moteur et cette intégration, compléter les contrôles navigateur qui manquent, puis exécuter les contrôles locaux et disponibles sur le site publié. Ne pas réécrire une API déjà présente sans défaut identifié.
+
+Attendus consignés avant les nouveaux contrôles navigateur :
+
+| Contrôle complémentaire | Résultat attendu | Obtenu |
+| --- | --- | --- |
+| Formes de retour et configuration | Getters synchrones, mutations sous forme de promesses, configuration exacte, état sérialisable sans secret | Conforme, écran mis à jour avant résolution |
+| Proposition avant démarrage | Priorité `game-not-started`, aucune partie démarrée | Conforme, aucun essai ni historique ajouté |
+| Validations via l’API réelle | Type avant longueur avant couleur ; refus sans essai ni changement d’historique ; explication visible | Conforme pour les 13 entrées invalides contrôlées |
+| Démarrages invalides via l’API réelle | Promesse rejetée avec `Error`, `code` et message ; état et HTML inchangés | Conforme pour les 12 options invalides contrôlées |
+| Protection des données et getters | Modifier entrées, réponses et configuration ne change pas la partie ; getters sans effet sur l’écran et l’erreur | Conforme, copies et rendu conservés |
+| Trois couleurs saisies dans l’interface | `invalid-length`, compteur et historique conservés après un essai valide ; proposition complète suivante acceptée | Conforme, puis victoire à 2 essais visible et relue par l’API |
+| Fin perdue et redémarrage | Priorité `game-finished`, partie figée, redémarrage depuis `lost` remettant tout à zéro | Conforme, compteur, historique, sélections et erreur remis à zéro |
+| Mauvaises valeurs du paramètre test | API absente pour `test=0` et `test=true` | Conforme, partie normale prête |
+
+Résultats exécutés le **25 novembre 2026**, jeu **v0.1.4** :
+
+| Vérification | Environnement et version | Résultat observé |
+| --- | --- | --- |
+| Tests automatisés du moteur et du contrat | Node.js v24.22.3, sources locales identiques à `main` au début de l’audit | **45/45 réussis** |
+| Cohérence du script généré et analyses syntaxiques | `build.js --check`, moteur, interface, serveur, script livré et banc navigateur local | Conforme, aucune erreur |
+| Application réelle, API et interface, huit contrôles complémentaires inclus | Navigateur intégré de Codex, `http://127.0.0.1:4173/test/browser.html`, v0.1.4 | **30/30 réussis, 0 échec** |
+| Application publiée, banc existant | Même navigateur, `https://clemyfleur.github.io/code_secret/test/browser.html`, v0.1.4 affichée, publication de `main` bc463b6 | **22/22 réussis, 0 échec** |
+
+Les contrôles navigateur sont automatisés par la page de vérification, lancée manuellement. Les neuf exemples T01 à T09 donnent les indices attendus, identiques dans l’état et à l’écran. Les victoires, la défaite au dixième, la remise à zéro, le rechargement et l’absence d’API en mode normal passent aussi. Aucun écart fonctionnel détecté ne justifie de modifier le moteur : l’intégration déjà présente est conservée. Seuls ce README et le banc `test/browser.js` ont été complétés ; la version du jeu reste v0.1.4.
+
+**Limites** : les huit nouveaux contrôles sont locaux et ne sont pas encore publiés ; le résultat public 22/22 concerne le banc déjà en ligne. Le banc enseignant n’a pas été fourni ni exécuté. Le double-clic `file://`, un contexte navigateur garanti neuf, un smartphone réel, les autres navigateurs et un lecteur d’écran restent à vérifier. La largeur de 320 px vérifiée dans le banc est une simulation. Le tag `jalon-1` n’a pas été modifié.
+
 Ouvrir `/?test=1` (ou `/nom-du-depot/?test=1` après publication). Attendre la présence de `window.codeSecretTest` dans la console. L’état initial est `not-started` ; sans `test=1`, l’API n’est pas exposée et la partie démarre normalement.
 
 ```js
@@ -155,9 +187,9 @@ Ces résultats établissent des contrôles locaux ; ils ne remplacent pas le tes
 
 1. **Cadrage effectué** : deux PDF lus, dépôt examiné, morpion conservé. Le modèle du cours manque encore ; indiquer son emplacement s’il est différent du morpion.
 2. **Socle effectué** : moteur, interface, API et vérifications ci-dessus. Confirmer le nom, l’apparence et le choix CSS natif ; SCSS pourra être ajouté si imposé par le cours.
-3. **Intégration à décider** : conserver le morpion à l’accueil et placer ce projet sous `/mastermind/` (proposition), ou le remplacer en gardant l’archive. Le paquet local est autonome ; aucun fichier du dépôt distant n’a été modifié et aucun tag de rendu n’a été créé.
-4. **Publication à effectuer après intégration** : créer une branche de travail dans le dépôt existant, y copier les fichiers à l’emplacement choisi, exécuter les tests et enregistrer un commit. Préserver l’historique Git du dépôt. Pour un site statique, GitHub Pages peut publier depuis une branche, dossier racine ou `docs` : voir la [documentation officielle](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site). Les chemins du jeu sont relatifs. Le serveur Node est réservé au développement et ne se déploie pas sur Pages. Consigner ici l’URL réellement publiée, la branche et le commit ; ces informations ne sont pas encore connues.
-5. **Recette publiée à faire** : relancer `test/browser.html`, vérifier l’absence de l’API hors mode test, tester les paramètres existants avec `test=1`, le cache neuf et le chemin sous le nom du dépôt. Tester aussi un smartphone réel et noter appareil, navigateur, date et résultat. L’émulation locale ne vaut pas preuve sur appareil ; lecteur d’écran et autres navigateurs restent à vérifier.
-6. **Rendus pédagogiques à compléter par l’étudiante** : J1 le 20 novembre 2026, tag `jalon-1` ; J2 le 18 décembre 2026, tag `final`. Heures exactes à vérifier sur Cyberlearn. Ajouter les liens et preuves de la version publiée, un retour personnel sur le jeu d’un camarade et, à J2, la capsule individuelle de 4 à 5 minutes sur Cyberlearn. Aucun de ces éléments n’est prétendu réalisé ici.
+3. **Intégration effectuée** : le jeu occupe la racine du dépôt [clemyfleur/code_secret](https://github.com/clemyfleur/code_secret). Le morpion reste archivé dans `examples/morpion/`.
+4. **Publication effectuée** : [jeu GitHub Pages](https://clemyfleur.github.io/code_secret/), branche `main`, dossier racine. Au début de l’audit du 25 novembre, la version publiée correspond à `bc463b665e021fd71d5490e90339c8787c6b9b87`. Le [tag jalon-1](https://github.com/clemyfleur/code_secret/releases/tag/jalon-1) conserve le commit `99d8ad6f6a9b5f00f7b6a84e17690cdddf807c4a`. Les ajouts documentaires ultérieurs ne sont pas inclus rétroactivement dans ce tag. Le serveur Node sert uniquement au développement.
+5. **Recette publiée réalisée en partie** : le banc public a été relancé le 25 novembre, avec 22/22 contrôles réussis, dont l’absence de l’API hors mode test et la conservation des paramètres avec `test=1`. Les huit contrôles ajoutés localement restent à publier et relancer sur Pages. Le cache neuf, un smartphone réel, un lecteur d’écran et d’autres navigateurs restent à vérifier ; noter appareil, navigateur, date et résultat. La simulation de largeur ne vaut pas preuve sur appareil.
+6. **Rendus pédagogiques à suivre par l’étudiante** : J1 le 20 novembre 2026, tag `jalon-1` créé ; J2 le 18 décembre 2026, tag `final` à préparer. La remise effective sur Cyberlearn n’est pas vérifiée ici. Heures exactes à vérifier sur Cyberlearn. Prévoir le retour personnel sur le jeu d’un camarade et, à J2, la capsule individuelle de 4 à 5 minutes.
 
 La partie reste en mémoire : recharger efface la progression. Les appels concurrents ne sont pas couverts par le contrat. Le jeu côté client ne prétend pas protéger le secret contre l’inspection technique. Aucun PDF du cours, conversation, identifiant d’accès ou vidéo n’est inclus dans ce paquet.
