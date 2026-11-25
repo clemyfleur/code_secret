@@ -208,6 +208,22 @@ Ces résultats établissent des contrôles locaux ; ils ne remplacent pas le tes
 
 Preuve visuelle conservée localement hors des sources : `outputs/mobile-390-historique.jpg` (non incluse dans le dépôt). Aucun code du jeu modifié. Cette vérification ne couvre pas le toucher réel, le lecteur d’écran ni un autre navigateur. Compte rendu publié dans le README sur `main` à la demande de l’utilisatrice, sans modifier le tag `jalon-1`.
 
+### Essai en largeur de 375 px du 25 novembre 2026
+
+Test d’interface réalisé sur le [jeu publié](https://clemyfleur.github.io/code_secret/), version affichée **v0.1.4**, dans l’aperçu Codex réglé à **375 × 844 px**. État de départ : partie normale neuve, secret aléatoire inconnu, compteur à zéro et historique vide. Action demandée : jouer un coup puis vérifier commandes, indices et historique sans débordement horizontal. Les attendus étaient définis dans la demande avant l’essai ; ce compte rendu a été ajouté au README après exécution.
+
+Méthode : sélection des couleurs et clic dans la vraie interface par pilotage navigateur, puis inspection visuelle et mesures du DOM. Il s’agit d’un essai ponctuel de l’interface, distinct des 30 contrôles du banc automatisé.
+
+| Comportement vérifié | Attendu | Observé | Statut |
+| --- | --- | --- | --- |
+| Commandes | Quatre listes utilisables et deux boutons dans la largeur disponible | Rouge, bleu, vert et jaune sélectionnés ; listes de 69,75 × 44 px ; boutons visibles et actifs de 142 × 46 px | Réussi |
+| Validation d’un coup | Un seul essai et une ligne ajoutés, sans erreur | Proposition rouge–bleu–vert–jaune acceptée ; compteur 1/10 ; erreur vide ; neuf essais restants | Réussi |
+| Affichage des indices | Même indice dans le message et l’historique | 1 bien placée et 1 mal placée dans les deux emplacements | Réussi |
+| Historique | Quatre couleurs, leurs noms et l’indice consultables | Une ligne numérotée 01, pastilles et noms lisibles par défilement vertical | Réussi |
+| Largeur | Aucun défilement horizontal nécessaire | Largeur totale de page 360 px, égale à la largeur utile (375 px moins 15 px de barre verticale) ; aucun élément du jeu ne dépasse | Réussi |
+
+Aucun problème reproduit, aucune correction du jeu nécessaire. L’exactitude mathématique de l’indice n’est pas établie par cet essai car le secret n’est pas connu. Les six couleurs, les dix lignes d’historique et le redémarrage ne sont pas retestés dans cet essai à 375 px ; ils ont été contrôlés séparément en 390 × 844 px ci-dessus. Le toucher sur téléphone réel et le lecteur d’écran restent à vérifier. Capture conservée localement : `outputs/test-mobile-375-un-coup.jpg` (non incluse dans le dépôt). Aucun nouveau test ni changement de code lors de la publication de ce compte rendu. Les tags `jalon-1` et `jalon-2` restent inchangés.
+
 1. **Cadrage effectué** : deux PDF lus, dépôt examiné, morpion conservé. Le modèle du cours manque encore ; indiquer son emplacement s’il est différent du morpion.
 2. **Socle effectué** : moteur, interface, API et vérifications ci-dessus. Confirmer le nom, l’apparence et le choix CSS natif ; SCSS pourra être ajouté si imposé par le cours.
 3. **Intégration effectuée** : le jeu occupe la racine du dépôt [clemyfleur/code_secret](https://github.com/clemyfleur/code_secret). Le morpion reste archivé dans `examples/morpion/`.
