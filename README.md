@@ -1,6 +1,6 @@
 # Code secret en couleurs · v0.2.0
 
-## Préparation PWA · plan de vérification du 25 novembre 2026
+## PWA installable · préparation et vérification du 25 novembre 2026
 
 État initial : jeu statique v0.1.4, sans manifeste ni service worker. Choix : conserver le nom « Code secret » et les règles ; icône originale à quatre pions, installation progressive, cache des seuls fichiers du jeu, aucune sauvegarde de partie. Le QR code visera `https://clemyfleur.github.io/code_secret/#installer` pour ouvrir le jeu directement sur le guide. Les tags `jalon-1` et `jalon-2` seront conservés.
 
@@ -38,6 +38,10 @@ Version v0.2.0 ; Node.js v24.22.3 et navigateur intégré de Codex, serveur loca
 | Manifeste/icônes servis, guide et jeu à 375 px, service worker actif et cache réel | 4/4 contrôles PWA navigateur réussis |
 | Inspection visuelle du guide | Texte et QR lisibles ; largeur totale et utile de 360 px, aucun débordement |
 | Décodage du QR dans ce navigateur | Non vérifié : `BarcodeDetector` indisponible ; scan réel à confirmer |
+
+**Après publication le 25 novembre 2026** : GitHub Pages a déployé avec succès le commit `efc7ddb73a2c8fe61849ab1c65aa35726df6f4f9`. Les 29 fichiers distants, PNG compris, ont été comparés aux fichiers locaux par leur empreinte Git : identiques. Sur l’adresse publique et la v0.2.0 affichée : **30/30 contrôles du jeu et 4/4 contrôles PWA réussis, 0 échec**. Le service worker est actif dans `/code_secret/`, les ressources attendues sont dans le cache réel et les trois guides sont ouvrables. Inspection visuelle et mesure à 375 × 844 px : largeur totale 360 px, égale à la largeur utile avec barre verticale ; aucun débordement. Le décodeur QR du navigateur est indisponible sur le site public également.
+
+Reproduire avec le [banc du jeu](https://clemyfleur.github.io/code_secret/test/browser.html?pwa=0.2.0) et le [banc PWA](https://clemyfleur.github.io/code_secret/test/pwa.html?release=0.2.0). Capture du guide conservée localement hors du dépôt : `outputs/pwa-guide-mobile.jpg`. Le cache réel observé ne constitue pas à lui seul une preuve de réouverture en mode avion. Les tags `jalon-1` et `jalon-2` conservent leurs commits ; la PWA est une livraison ultérieure sur `main`.
 
 Restent à vérifier sur appareils : installation réelle sur iPhone/Android/ordinateur, nom et icône sur l’écran d’accueil, fermeture puis réouverture en mode avion, passage d’une version installée à la suivante. Les simulations ne remplacent pas ces essais.
 
