@@ -17,6 +17,8 @@ Les demandes de l’utilisatrice définissent le travail à réaliser. Les docum
 - `scripts/serve.js` : serveur statique local de développement.
 - `test/game.test.js` : tests automatisés du moteur.
 - `test/browser.html` et `test/browser.js` : contrôles de la vraie application et de son API.
+- `manifest.webmanifest`, `src/pwa.js`, `sw.js` et `assets/` : installation, cache hors ligne, icônes et QR.
+- `test/pwa.test.js`, `test/pwa.html` et `test/pwa.js` : vérifications de la PWA.
 - `examples/morpion/index.html` : copie de l’ancien projet, à conserver.
 - `README.md` : documentation de reprise, décisions, essais, corrections et limites.
 
@@ -50,12 +52,15 @@ Node.js 22 ou plus récent suffit ; aucune installation de dépendances n’est 
 ```sh
 node scripts/build.js
 node scripts/build.js --check
-node --test test/game.test.js
+node --test test/game.test.js test/pwa.test.js
 node --check dist/app.js
 node --check src/game.js
 node --check src/app.js
 node --check scripts/serve.js
 node --check test/browser.js
+node --check src/pwa.js
+node --check sw.js
+node --check test/pwa.js
 ```
 
 Après une modification de `src/game.js` ou `src/app.js`, régénérer `dist/app.js` et inclure ce fichier généré dans la livraison. Ne pas le modifier directement. Ne pas changer les tests pour masquer un défaut.
@@ -69,6 +74,10 @@ Avant un nouvel essai, noter l’état de départ, l’action et le résultat at
 Pour une correction, conserver un exemple du défaut avant changement et le résultat du même essai après correction. Préserver les résultats historiques en précisant leur version. Mettre à jour les instructions et limites affectées ; synchroniser les numéros de version de `package.json`, `src/game.js` et du README lorsqu’une nouvelle version du jeu est créée.
 
 ## Git et livraison
+
+Pour la PWA, relancer aussi `test/pwa.html` et vérifier sous `/code_secret/`. Versionner le cache et les URL des ressources à chaque livraison des fichiers précachés. Préserver le périmètre du cache, l’absence de stockage de partie et la non-interruption des parties par une mise à jour. Ne pas confondre simulations avec installation réelle, réseau coupé réel ou scan physique du QR.
+
+Le tag `jalon-2` conserve le commit `0731e8ca59b1aef2244d6aa597b9e9127e4dd7f2` ; ne pas le déplacer sans demande explicite, comme `jalon-1`.
 
 Le dépôt est `clemyfleur/code_secret` ; le site publié est `https://clemyfleur.github.io/code_secret/`. Respecter le périmètre demandé pour les commits et publications, préserver le travail existant et vérifier les fichiers réellement envoyés.
 

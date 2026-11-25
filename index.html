@@ -4,10 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#163b37">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Code secret">
   <meta name="description" content="Retrouvez un code de quatre couleurs en dix essais. Un jeu de logique solo, accessible au clavier et sur mobile.">
   <title>Code secret · Jeu de couleurs</title>
-  <link rel="stylesheet" href="./src/styles.css">
-  <script defer src="./dist/app.js"></script>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="./src/styles.css?v=0.2.0">
+  <script defer src="./dist/app.js?v=0.2.0"></script>
+  <script defer src="./src/pwa.js?v=0.2.0"></script>
 </head>
 <body>
   <a class="skip-link" href="#game">Aller au jeu</a>
@@ -39,6 +45,7 @@
           </details>
         </section>
         <p class="quiet">6 couleurs · Répétitions autorisées · 10 essais</p>
+        <p><a href="#installer" class="install-shortcut">Installer le jeu sur mon appareil</a></p>
       </aside>
       <section id="game" class="board" aria-labelledby="game-title">
         <div class="board-heading"><h2 id="game-title">Votre partie</h2><span id="counter" class="counter">0 / 10 essais</span></div>
@@ -55,6 +62,30 @@
         </section>
       </section>
     </div>
+    <section id="installer" class="install-section" aria-labelledby="install-title">
+      <div class="install-heading">
+        <img src="./assets/icon-192.png" width="64" height="64" alt="" class="app-icon">
+        <div><p class="eyebrow">À EMPORTER</p><h2 id="install-title">Code secret sur votre écran d’accueil</h2></div>
+      </div>
+      <p>Gardez le jeu à portée de main sur téléphone ou ordinateur, avec son icône à quatre couleurs.</p>
+      <button id="install-app" type="button" class="primary" hidden>Installer Code secret</button>
+      <p id="install-status" role="status" aria-live="polite">Choisissez votre appareil ci-dessous pour installer le jeu.</p>
+      <div class="install-guide">
+        <div>
+          <details open><summary>iPhone ou iPad · Safari</summary><p>Ouvrez cette page dans Safari. Dans le menu du navigateur, touchez <strong>Partager</strong>, puis <strong>Sur l’écran d’accueil</strong>. Si proposé, activez « Ouvrir comme app web », puis touchez <strong>Ajouter</strong>.</p></details>
+          <details><summary>Android · Chrome ou navigateur compatible</summary><p>Touchez <strong>Installer Code secret</strong> si ce bouton apparaît. Sinon, ouvrez le menu ⋮ du navigateur et choisissez <strong>Installer l’application</strong> ou <strong>Ajouter à l’écran d’accueil</strong>, puis confirmez.</p></details>
+          <details><summary>Ordinateur · Chrome, Edge ou Safari</summary><p>Dans Chrome ou Edge, utilisez l’icône d’installation dans la barre d’adresse, le bouton ci-dessus ou la commande d’installation du menu. Sur Mac avec Safari compatible, choisissez <strong>Fichier → Ajouter au Dock</strong>. Si aucune commande n’est proposée, vous pouvez continuer à jouer dans le navigateur.</p></details>
+          <p class="quiet">Les intitulés varient selon votre appareil. Si le lien s’ouvre dans une application de messagerie, ouvrez-le dans Safari ou Chrome pour retrouver les commandes d’installation.</p>
+          <p id="offline-status" class="quiet" role="status">Une première ouverture avec Internet est nécessaire pour préparer le jeu hors connexion. Recharger ou rouvrir démarre une nouvelle partie.</p>
+        </div>
+        <figure class="install-qr">
+          <img src="./assets/qr-code-secret.png" width="246" height="246" alt="QR code vers le jeu Code secret et son guide d’installation">
+          <figcaption>Scannez pour ouvrir le jeu sur votre téléphone.</figcaption>
+          <a href="https://clemyfleur.github.io/code_secret/#installer">Ouvrir le jeu et le guide</a>
+          <a href="./assets/qr-code-secret.png" download="qr-code-secret.png">Télécharger le QR code</a>
+        </figure>
+      </div>
+    </section>
     <footer><span>Un jeu solo inspiré du Mastermind</span><span id="version"></span></footer>
     <noscript>Activez JavaScript pour jouer. Aucun compte ni service externe n’est nécessaire.</noscript>
   </main>

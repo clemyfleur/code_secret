@@ -1,4 +1,57 @@
-# Code secret en couleurs · v0.1.4
+# Code secret en couleurs · v0.2.0
+
+## Préparation PWA · plan de vérification du 25 novembre 2026
+
+État initial : jeu statique v0.1.4, sans manifeste ni service worker. Choix : conserver le nom « Code secret » et les règles ; icône originale à quatre pions, installation progressive, cache des seuls fichiers du jeu, aucune sauvegarde de partie. Le QR code visera `https://clemyfleur.github.io/code_secret/#installer` pour ouvrir le jeu directement sur le guide. Les tags `jalon-1` et `jalon-2` seront conservés.
+
+Avant essais : vérifier le manifeste et les dimensions des icônes ; décoder le QR pour retrouver cette URL ; exécuter les tests du moteur, du cache hors ligne et du guide d’installation ; relancer les 30 contrôles de l’interface ; inspecter le guide en 375 px. Attendus : mêmes règles/API, aucun débordement, aucune API exposée en mode normal, service worker limité au dossier du jeu, ressources disponibles en cache, guide utilisable même sans bouton d’installation natif. Vérifier le chargement sous `/code_secret/`. Les tests simulés de réseau coupé seront distingués d’un véritable essai en mode avion, et l’installation réelle sur iPhone, Android et ordinateur restera à confirmer sur ces appareils.
+
+### Installer Code secret
+
+Ouvrir le [jeu et son guide](https://clemyfleur.github.io/code_secret/#installer), ou scanner le QR. Le code contient exactement cette URL, sans redirection ni suivi. Conserver sa marge blanche et ses proportions à l’impression.
+
+![QR code vers Code secret et son guide](assets/qr-code-secret.png)
+
+[QR PNG de 656 × 656 px](assets/qr-code-secret.png) · [QR vectoriel SVG](assets/qr-code-secret.svg)
+
+- **iPhone/iPad** : Safari → Partager → Sur l’écran d’accueil → Ajouter ; activer « Ouvrir comme app web » si proposé.
+- **Android** : bouton « Installer Code secret » si proposé, sinon menu du navigateur → Installer l’application / Ajouter à l’écran d’accueil.
+- **Ordinateur** : Chrome/Edge → icône ou menu d’installation ; Safari sur Mac compatible → Fichier → Ajouter au Dock. Sans commande d’installation, le jeu reste jouable dans le navigateur.
+
+Le nom affiché est **Code secret**. L’icône originale à quatre pions existe en PNG 192 et 512 px, en version maskable 512 px et en icône Apple 180 px ; `assets/icon.svg` est la source graphique. Le bouton natif apparaît seulement après `beforeinstallprompt` ; le guide reste accessible à tous. Sources : [MDN installation](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable), [invitation native](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Trigger_install_prompt), [Apple](https://support.apple.com/guide/iphone/iphea86e5236/ios).
+
+### Hors connexion et mises à jour
+
+Après une première ouverture HTTPS (ou localhost en développement), attendre « Jeu prêt hors connexion sur cet appareil ». Seuls le jeu, le guide, les icônes et le QR sont précachés ; le cache est propre au sous-répertoire. Les pages de tests et les requêtes `?test=1` ne sont pas servies par ce cache ; le mode test n’enregistre pas de service worker.
+
+La partie reste en mémoire : fermer, recharger ou rouvrir démarre une nouvelle partie. Le navigateur ou l’utilisateur peut effacer le cache ; une visite en ligne le prépare à nouveau. Une mise à jour attend la fermeture de toutes les fenêtres et onglets du jeu avant activation, sans rechargement forcé d’une partie. Incrémenter ensemble la version de `sw.js`, les URL des ressources versionnées et celle du jeu lors d’une livraison affectant le précache. Seuls les anciens caches de ce jeu et de ce sous-répertoire sont supprimés.
+
+### Vérifications PWA du 25 novembre 2026
+
+Version v0.2.0 ; Node.js v24.22.3 et navigateur intégré de Codex, serveur local sous `http://127.0.0.1:4174/code_secret/`.
+
+| Vérification | Résultat local |
+| --- | --- |
+| Moteur et API | 45/45 tests Node réussis |
+| Manifeste/icônes, isolation et cache hors ligne, invitation à installer | 10/10 tests Node réussis, dont réseau coupé et événements d’installation simulés |
+| Vraie interface et API | 30/30 contrôles navigateur réussis sur v0.2.0 |
+| Manifeste/icônes servis, guide et jeu à 375 px, service worker actif et cache réel | 4/4 contrôles PWA navigateur réussis |
+| Inspection visuelle du guide | Texte et QR lisibles ; largeur totale et utile de 360 px, aucun débordement |
+| Décodage du QR dans ce navigateur | Non vérifié : `BarcodeDetector` indisponible ; scan réel à confirmer |
+
+Restent à vérifier sur appareils : installation réelle sur iPhone/Android/ordinateur, nom et icône sur l’écran d’accueil, fermeture puis réouverture en mode avion, passage d’une version installée à la suivante. Les simulations ne remplacent pas ces essais.
+
+### Organisation et vérification PWA
+
+`manifest.webmanifest` décrit l’installation ; `src/pwa.js` gère l’invitation et les messages ; `sw.js` prépare le cache ; `assets/` contient les icônes et QR. Aucun service externe ni dépendance n’est ajouté au jeu.
+
+```sh
+node --test test/game.test.js test/pwa.test.js
+node --check src/pwa.js
+node --check sw.js
+```
+
+`test/pwa.html` et `test/pwa.js` vérifient la vraie PWA. Pour reproduire le sous-répertoire Pages en PowerShell, définir `$env:BASE_PATH='/code_secret/'` et `$env:PORT='4174'`, puis lancer `node scripts/serve.js`. Ouvrir `/code_secret/test/browser.html` et `/code_secret/test/pwa.html`. Le serveur écoute en local ; un téléphone utilise l’adresse publique HTTPS.
 
 Jeu solo statique : quatre couleurs à retrouver en dix essais, utilisable au clavier et sur petit écran. Aucune dépendance à installer pour le jeu, aucun compte, serveur applicatif, service d’IA ou stockage de données personnelles.
 

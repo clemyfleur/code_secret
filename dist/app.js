@@ -2,7 +2,7 @@
 (async () => {
 'use strict';
 const COLORS = Object.freeze(['rouge', 'bleu', 'vert', 'jaune', 'orange', 'violet']);
-const APP_VERSION = '0.1.4';
+const APP_VERSION = '0.2.0';
 const CONFIG = Object.freeze({
   apiVersion: '0.2', rulesVersion: 'code-couleurs-1.0',
   secretLength: 4, maxAttempts: 10, allowDuplicates: true, colors: COLORS,
