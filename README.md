@@ -191,6 +191,23 @@ Ces résultats établissent des contrôles locaux ; ils ne remplacent pas le tes
 
 ## Suite, choix à confirmer et limites
 
+### Essai mobile du 25 novembre 2026
+
+État de départ : jeu publié v0.1.4 en mode normal, partie neuve à zéro essai, aperçu Codex de 390 × 844 px. Actions : sélectionner les six couleurs à travers les quatre listes, valider une proposition complète, refuser une saisie incomplète, remplir l’historique jusqu’à dix essais si la partie n’est pas gagnée avant, puis utiliser « Nouvelle partie ». Attendus : commandes accessibles par défilement vertical, noms et pastilles lisibles, indice et compteur actualisés, refus sans consommation, historique consultable et aucune largeur supérieure à celle de la page ; le redémarrage vide l’historique. Il s’agit d’un navigateur de bureau avec dimensions simulées, sans preuve de fonctionnement tactile sur téléphone réel.
+
+**Exécution du 25 novembre 2026** : interactions effectuées dans la vraie interface publiée (sélections et clics pilotés, puis inspection visuelle et mesures du DOM), v0.1.4, `https://clemyfleur.github.io/code_secret/`, 390 × 844 px. Les six couleurs ont été sélectionnées : rouge–bleu–vert–jaune puis orange–violet–vert–jaune. Premier indice observé : 1 bien placée, 2 mal placées ; deuxième : 1 bien placée, 1 mal placée. Le secret est aléatoire : ces indices servent ici à observer le rendu, pas à prouver le calcul à secret connu.
+
+| Contrôle mobile | Obtenu | Statut |
+| --- | --- | --- |
+| Quatre listes et six couleurs | Sélections possibles, noms et pastilles visibles ; listes de 73,5 × 44 px | Réussi |
+| Boutons de validation et redémarrage | Deux boutons visibles dans la largeur, chacun de 149,5 × 46 px | Réussi |
+| Proposition complète puis incomplète | Une ligne ajoutée, puis message « Choisissez exactement quatre couleurs. » avec compteur et historique inchangés à 1 | Réussi |
+| Historique rempli et fin de partie | Dix lignes, noms des quatre couleurs et indices lisibles ; essai 10 atteint par défilement vertical ; validation désactivée à la défaite | Réussi |
+| Débordement horizontal | Largeur de page et de corps 375 px, égale à la largeur utile (390 px moins 15 px de barre verticale) ; aucun élément du jeu ne dépasse horizontalement | Réussi |
+| Nouvelle partie | Retour à 0 essai, historique vide, quatre sélections vides et actives, erreur effacée | Réussi |
+
+Preuve visuelle conservée localement hors des sources : `outputs/mobile-390-historique.jpg` (non incluse dans le dépôt). Aucun code du jeu modifié. Cette vérification ne couvre pas le toucher réel, le lecteur d’écran ni un autre navigateur. Compte rendu publié dans le README sur `main` à la demande de l’utilisatrice, sans modifier le tag `jalon-1`.
+
 1. **Cadrage effectué** : deux PDF lus, dépôt examiné, morpion conservé. Le modèle du cours manque encore ; indiquer son emplacement s’il est différent du morpion.
 2. **Socle effectué** : moteur, interface, API et vérifications ci-dessus. Confirmer le nom, l’apparence et le choix CSS natif ; SCSS pourra être ajouté si imposé par le cours.
 3. **Intégration effectuée** : le jeu occupe la racine du dépôt [clemyfleur/code_secret](https://github.com/clemyfleur/code_secret). Le morpion reste archivé dans `examples/morpion/`.
